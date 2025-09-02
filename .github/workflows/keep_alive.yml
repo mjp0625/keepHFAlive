@@ -10,6 +10,7 @@ on:
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
+    retention-days: 3  # 保留 3 天
 
     steps:
       # 1️⃣ 拉取仓库代码
