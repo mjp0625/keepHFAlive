@@ -3,14 +3,13 @@ name: HF Space Keep Alive
 # 多 cron 调度 + 手动触发
 on:
   schedule:
-    - cron: '*/25 * * * *'  # 每 25 分钟触发
+   # - cron: '*/25 * * * *'  # 每 25 分钟触发
     - cron: '*/35 * * * *'  # 每 35 分钟触发
   workflow_dispatch:        # 支持手动触发
 
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
-    retention-days: 3  # 保留 3 天
 
     steps:
       # 1️⃣ 拉取仓库代码
