@@ -77,13 +77,9 @@ def keep_alive_space(space):
         else:
             msg = f"[{url}] Space 保活失败，状态码: {response.status_code}"
             log(msg)
-            send_email("Hugging Face Space 保活失败", msg)
-            notify_slack(msg)
     except Exception as e:
         msg = f"[{url}] Space 保活异常: {e}"
         log(msg)
-        send_email("Hugging Face Space 保活异常", msg)
-        notify_slack(msg)
 
 if __name__ == "__main__":
     for space in SPACE_LIST:
