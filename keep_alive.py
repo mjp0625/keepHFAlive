@@ -1,19 +1,19 @@
 import os
-import smtplib
 import requests
 import time
 import random
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 # ========== 配置 ==========
 # 每个 Space 可以单独配置 token（None 表示公共 Space）
 SPACE_LIST = [
-    {"url": "https://huggingface.co/spaces/jpmaThomas/test", "token": os.getenv("HF_TOKEN")},
-    {"url": "https://huggingface.co/spaces/jpmaThomas/test1", "token": os.getenv("HF_TOKEN")},
+    {"id": "jpmaThomas/test", "token": os.getenv("HF_TOKEN")},
+    {"id": "jpmaThomas/test1", "token": os.getenv("HF_TOKEN")},
     # 可以继续添加
 ]
+
+# Hugging Face Space API 地址
+API_URL = "https://huggingface.co/api/spaces"
 
 LOG_FILE = "logs/keep_alive.log"
 
@@ -55,30 +55,33 @@ def cleanup_logs():
         log(f"日志清理失败: {e}")
 
 def keep_alive_space(space):
-    url = space["url"]
+    space_id = space["id"]
     token = space.get("token")
 
     # 随机延迟
     delay_minutes = random.randint(DELAY_MIN, DELAY_MAX)
-    log(f"[{url}] 随机延迟 {delay_minutes} 分钟后访问 Space")
+    log(f"[{space_id}] 随机延迟 {delay_minutes} 分钟后访问 Space")
     time.sleep(delay_minutes * 60)
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0"
     }
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
+    # 直接调用 Hugging Face Space API 获取状态
+    url = f"{API_URL}/{space_id}/runtime"
     try:
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
-            log(f"[{url}] Space 保活成功！")
+            data = response.json()
+            status = data.get("runtime", {}).get("stage")
+            log(f"[{space_id}] Space 保活成功，当前状态: {status}")
         else:
-            msg = f"[{url}] Space 保活失败，状态码: {response.status_code}"
+            msg = f"[{space_id}] Space 保活失败，状态码: {response.status_code}"
             log(msg)
     except Exception as e:
-        msg = f"[{url}] Space 保活异常: {e}"
+        msg = f"[{space_id}] Space 保活异常: {e}"
         log(msg)
 
 if __name__ == "__main__":
