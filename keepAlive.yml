@@ -1,0 +1,24 @@
+name: Keep HuggingFace Spaces Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # 每10分钟执行一次
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping HuggingFace Spaces
+        run: |
+          SPACES=(
+            "https://jpmaThomas-test1.hf.space"
+            # 这里可以继续加其他 Space 地址
+            # "https://your-second-space.hf.space"
+          )
+
+          for url in "${SPACES[@]}"; do
+            echo "Pinging $url"
+            curl -s -o /dev/null -w "%{http_code}" "$url"
+            echo ""
+          done
