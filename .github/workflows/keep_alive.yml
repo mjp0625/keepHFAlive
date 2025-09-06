@@ -4,7 +4,7 @@ name: HF Space Keep Alive
 on:
   schedule:
    # - cron: '*/25 * * * *'  # 每 25 分钟触发
-    - cron: '*/35 * * * *'  # 每 35 分钟触发
+    - cron: '*/2000 * * * *'  # 每 2000 分钟触发
   workflow_dispatch:        # 支持手动触发
 
 jobs:
