@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 # 每个 Space 可以单独配置 token（None 表示公共 Space）
 SPACE_LIST = [
     {"id": "jpmaThomas/test", "token": os.getenv("HF_TOKEN")},
-    {"id": "jpmaThomas/test1", "token": os.getenv("HF_TOKEN")},
+    # {"id": "jpmaThomas/test1", "token": os.getenv("HF_TOKEN")},
     # 可以继续添加
 ]
 
