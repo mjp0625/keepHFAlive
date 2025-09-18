@@ -1,39 +1,15 @@
-name: HF Space Keep Alive
+name: Keep Hugging Face Space Alive
 
-# 多 cron 调度 + 手动触发
 on:
   schedule:
-   # - cron: '*/25 * * * *'  # 每 25 分钟触发
-    - cron: '*/2000 * * * *'  # 每 2000 分钟触发
-  workflow_dispatch:        # 支持手动触发
+    - cron: '0 */6 * * *'  # 每6小时
+  workflow_dispatch:
 
 jobs:
-  keep-alive:
+  ping:
     runs-on: ubuntu-latest
-
     steps:
-      # 1️⃣ 拉取仓库代码
-      - name: Checkout 仓库
-        uses: actions/checkout@v3
-
-      # 2️⃣ 设置 Python 环境
-      - name: 设置 Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      # 3️⃣ 安装依赖
-      - name: 安装依赖
-        run: pip install -r requirements.txt
-
-      # 4️⃣ 运行保活脚本
-      - name: 运行 keep_alive.py
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: python keep_alive.py
+      - name: Send HTTP request to Space
+        run: |
+          sleep $((RANDOM % 300))
+          curl -s -o /dev/null -w "Status: %{http_code}\n" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" https://jpmathomas-test.hf.space/files/index.html
